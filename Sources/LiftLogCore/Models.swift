@@ -116,10 +116,11 @@ public struct AppData: Codable, Equatable, Sendable {
     public var scheduleChanges: [ScheduleEntry] = []
     public var body: [BodyEntry] = []
     public var timeZoneID = "Europe/Warsaw"
+    public var manualNextLoads: [String: Double] = [:]
     public var haptics = true
     public var notifications = false
     public init() {}
-    enum CodingKeys: String, CodingKey { case templates, workouts, scheduleChanges, body, timeZoneID, haptics, notifications }
+    enum CodingKeys: String, CodingKey { case templates, workouts, scheduleChanges, body, timeZoneID, haptics, notifications, manualNextLoads }
     public init(from decoder: Decoder) throws {
         let c = try decoder.container(keyedBy: CodingKeys.self)
         templates = try c.decode([SessionTemplate].self, forKey: .templates)
@@ -127,6 +128,7 @@ public struct AppData: Codable, Equatable, Sendable {
         scheduleChanges = try c.decode([ScheduleEntry].self, forKey: .scheduleChanges)
         body = try c.decode([BodyEntry].self, forKey: .body)
         timeZoneID = try c.decodeIfPresent(String.self, forKey: .timeZoneID) ?? "Europe/Warsaw"
+        manualNextLoads = try c.decodeIfPresent([String: Double].self, forKey: .manualNextLoads) ?? [:]
         haptics = try c.decodeIfPresent(Bool.self, forKey: .haptics) ?? true
         notifications = try c.decodeIfPresent(Bool.self, forKey: .notifications) ?? false
     }

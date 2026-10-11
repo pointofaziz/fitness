@@ -32,7 +32,11 @@ import UserNotifications
         }
     }
     func start(_ entry: ScheduleEntry, light: Bool) {
-        transaction { state in state.workouts.append(try WorkoutFactory.start(entry: entry, data: state, now: now, light: light)) }
+        transaction { state in
+            let workout = try WorkoutFactory.start(entry: entry, data: state, now: now, light: light)
+            state.workouts.append(workout)
+            if !light { for log in workout.exercises { state.manualNextLoads.removeValue(forKey: log.id) } }
+        }
     }
     func complete(workout: UUID, exercise: String, set: UUID, weight: Double, reps: Int, rir: Int) -> Bool {
         let saved = editWorkout(workout) { w in try WorkoutOperations.completeSet(workout: &w, exerciseID: exercise, setID: set, weight: weight, reps: reps, rir: rir, now: now) }

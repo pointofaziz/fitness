@@ -46,6 +46,9 @@ public enum Progression {
             } }.first
     }
     public static func recommend(exercise: Exercise, templateID: String, sets: Int, data: AppData) -> Recommendation {
+        if let manual = data.manualNextLoads[exercise.id] {
+            return Recommendation(action: .hold, nextLoad: manual, nextRepTarget: sets * exercise.minReps, reason: "Manual next target. Confirm comfortable form and effort; this is not an earned automatic increase.")
+        }
         guard var previous = baseline(exercise: exercise, templateID: templateID, data: data) else {
             return Recommendation(action: exercise.initialLoad == nil ? .chooseLoad : .hold, nextLoad: exercise.initialLoad, nextRepTarget: sets * exercise.minReps, reason: exercise.initialLoad == nil ? "Choose a comfortable starting weight." : "Provisional starting weight, not previously lifted in this app. Adjust to comfortable form and effort.")
         }

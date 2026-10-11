@@ -30,6 +30,8 @@ public enum Backup {
         let seedIDs = Set(Programme.templates.map(\.id))
         try require(Set(data.templates.map(\.id)) == seedIDs && unique(data.templates.map(\.id)), "Backup must contain the four programme templates.")
         try require(TimeZone(identifier: data.timeZoneID) != nil, "Unknown calendar time zone.")
+        let exerciseIDs = Set(Programme.templates.flatMap(\.exercises).map(\.id))
+        try require(data.manualNextLoads.allSatisfy { exerciseIDs.contains($0.key) && validWeight($0.value) }, "Invalid manual next target.")
         for t in data.templates {
             let seed = Programme.templates.first { $0.id == t.id }!
             try require(t.weekday == seed.weekday && Set(t.exercises.map(\.id)) == Set(seed.exercises.map(\.id)) && unique(t.exercises.map(\.id)), "Invalid programme identity or schedule.")

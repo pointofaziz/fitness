@@ -6,8 +6,8 @@ A native, offline SwiftUI iPhone workout log for the exact four-day programme in
 
 ## Download and open on your Mac
 
-1. Download the `LiftLog.zip` archive supplied with this delivery. Double-click it to extract the `LiftLog` folder. It includes the complete project, source, documentation and Git history; it excludes Linux build products and the toolchain.
-2. Move the extracted folder somewhere permanent, for example `~/Developer/LiftLog`. If the cloud workspace browser is used instead, download `/workspace/fitness` with all files. The commits are local in Cloud, **not pushed to GitHub**; cloning the previously empty remote will not retrieve this implementation.
+1. Open [the repository](https://github.com/pointofaziz/fitness) and choose **Code → Download ZIP**. Double-click the downloaded ZIP to extract `fitness-main`. It includes the complete source project and tests. GitHub's source ZIP does not contain Git history; use `git clone https://github.com/pointofaziz/fitness.git` if you need the commits.
+2. Move the extracted folder somewhere permanent, for example `~/Developer/LiftLog`.
 3. Install a current stable **Xcode** from the Mac App Store or [Apple Developer downloads](https://developer.apple.com/download/all/). Xcode 15+ can build the iOS 17 deployment baseline; prefer the current stable Xcode that supports your Mac's macOS and your iPhone's iOS. Open Xcode once, accept its licence and let it install components.
 4. In Xcode → Settings → Platforms/Components (label varies by version), download an iOS simulator runtime. Use a runtime at iOS 17 or later.
 5. Open `LiftLog.xcodeproj`, **not `Package.swift`**. Select the shared **LiftLog** scheme and an available iPhone simulator. Press **⌘R** to build and run. Simulator use requires no paid membership or signing team.
@@ -25,6 +25,14 @@ IOS_SIMULATOR_ID='PASTE-SIMULATOR-UUID-HERE' ./scripts/test-ios.sh
 ```
 
 The test script creates a new `.xcresult` under `/tmp`; open that file in Xcode to inspect failures and UI evidence. `DEVELOPER_DIR` is scoped to this shell. No simulator name or SDK installation is assumed.
+
+## Build on a Mac in the cloud
+
+Open [GitHub Actions](https://github.com/pointofaziz/fitness/actions/workflows/ios.yml). The **Build iPhone app in the cloud** workflow runs automatically on pushes to `main`; you can also click **Run workflow**. It uses a GitHub-hosted Mac, compiles a universal iPhone simulator app, captures an actual app screenshot, and runs the unit/UI tests. A workflow definition is not proof of a successful run: check the current result and logs.
+
+After a run, open it and find **Artifacts → LiftLog-Simulator-and-Test-Results**. Sign into GitHub if downloading requires it. Extract the artifact, then extract its `LiftLog-Simulator.zip`. Double-click **Run-LiftLog.command** in the `simulator-download` folder to automatically select an iPhone simulator, install the prebuilt app and open it. You still need Xcode and an iOS 17+ simulator runtime on your Mac, but no local compilation or signing team is needed. If macOS blocks the command, right-click → Open, or open Terminal in that folder and run `bash Run-LiftLog.command`.
+
+The artifact also contains `Simulator-preview.png`, build/test logs and, when tests reach execution, an `.xcresult` bundle. If the build fails there will be no app ZIP; read `build.log`. If tests fail after building, the app ZIP can still exist, but the workflow must not be described as fully verified. The simulator binary cannot be installed on a physical iPhone: that requires a device build and your Apple signing team as described below. Artifact downloads expire after 14 days; rerun the workflow if necessary.
 
 ## Install on your own iPhone
 

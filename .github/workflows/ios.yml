@@ -1,0 +1,95 @@
+name: Build iPhone app in the cloud
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ios-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build-and-test:
+    runs-on: macos-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check Xcode and select an iPhone simulator
+        shell: bash
+        run: |
+          set -euo pipefail
+          xcodebuild -version
+          xcrun simctl list devices available --json > "$RUNNER_TEMP/devices.json"
+          device="$(python3 scripts/select-simulator.py "$RUNNER_TEMP/devices.json")"
+          echo "LIFTLOG_SIMULATOR_ID=$device" >> "$GITHUB_ENV"
+
+      - name: Build the simulator app for Intel and Apple silicon Macs
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p cloud-results
+          xcodebuild -project LiftLog.xcodeproj -scheme LiftLog -configuration Debug \
+            -destination 'generic/platform=iOS Simulator' \
+            -derivedDataPath "$RUNNER_TEMP/LiftLogBuild" \
+            CODE_SIGNING_ALLOWED=NO ONLY_ACTIVE_ARCH=NO 'ARCHS=arm64 x86_64' \
+            build 2>&1 | tee cloud-results/build.log
+
+      - name: Package a runnable simulator app
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p simulator-download
+          ditto "$RUNNER_TEMP/LiftLogBuild/Build/Products/Debug-iphonesimulator/LiftLog.app" simulator-download/LiftLog.app
+          cp scripts/Run-LiftLog.command scripts/select-simulator.py simulator-download/
+          chmod +x simulator-download/Run-LiftLog.command
+          cat > simulator-download/READ-ME.txt <<'GUIDE'
+          This is the native iPhone app built by GitHub Actions for Simulator.
+          On a Mac with Xcode and an iOS 17+ simulator runtime, double-click
+          Run-LiftLog.command. If macOS asks for approval, right-click it and
+          choose Open. Alternatively open Terminal in this folder and run:
+          bash Run-LiftLog.command
+
+          The launcher selects and opens an iPhone automatically; it does not
+          compile or require a signing team. It installs into a local simulator,
+          preserving existing data for the same app identifier.
+
+          This simulator app cannot be installed on a physical iPhone.
+          For a real iPhone use the source project and the signing steps in README.
+          See the workflow test results before treating the build as verified.
+          GUIDE
+          ditto -c -k --keepParent simulator-download cloud-results/LiftLog-Simulator.zip
+
+      - name: Capture the actual app on the cloud iPhone simulator
+        shell: bash
+        run: |
+          set -euo pipefail
+          xcrun simctl bootstatus "$LIFTLOG_SIMULATOR_ID" -b
+          xcrun simctl install "$LIFTLOG_SIMULATOR_ID" simulator-download/LiftLog.app
+          bundle="$(/usr/libexec/PlistBuddy -c 'Print:CFBundleIdentifier' simulator-download/LiftLog.app/Info.plist)"
+          xcrun simctl launch "$LIFTLOG_SIMULATOR_ID" "$bundle"
+          sleep 5
+          xcrun simctl io "$LIFTLOG_SIMULATOR_ID" screenshot cloud-results/Simulator-preview.png
+
+      - name: Run unit and UI tests
+        shell: bash
+        run: |
+          set -euo pipefail
+          xcodebuild -project LiftLog.xcodeproj -scheme LiftLog -configuration Debug \
+            -destination "platform=iOS Simulator,id=$LIFTLOG_SIMULATOR_ID" \
+            -derivedDataPath "$RUNNER_TEMP/LiftLogTests" \
+            -resultBundlePath cloud-results/LiftLog.xcresult \
+            CODE_SIGNING_ALLOWED=NO test 2>&1 | tee cloud-results/tests.log
+
+      - name: Make app, screenshot and test evidence downloadable
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: LiftLog-Simulator-and-Test-Results
+          path: cloud-results/
+          if-no-files-found: warn
+          retention-days: 14

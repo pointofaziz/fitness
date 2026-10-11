@@ -54,3 +54,7 @@ Check current Personal Team expiry/reprovisioning requirements in Apple's offici
 ## Deliberate scope limits
 
 No automatic sync, account, food tracker, body-fat estimate, HealthKit, AI or publishing. Recovery copies live inside the app's Files container and are lost with app deletion unless exported elsewhere. If the native store cannot open, startup shows an error and existing recovery-file sharing rather than silently resetting it. Apple documentation links are supplied in README, but live retrieval was blocked by the cloud egress proxy (HTTP CONNECT 403).
+
+## Cloud Mac workflow added
+
+`.github/workflows/ios.yml` uses a GitHub-hosted Mac to build a universal simulator app, capture a native screenshot, and execute the unit/UI suites. It uploads build/test logs and the simulator package to the run's Artifacts section. The simulator selector was checked against available/unavailable devices, different platforms and deployment versions on Linux; the workflow YAML and launcher shell syntax also passed local checks. These checks do not establish that a GitHub Mac run passed. Consult the current Actions result for Apple SDK and simulator evidence.

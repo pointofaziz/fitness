@@ -1,4 +1,5 @@
 import SwiftUI
+import UIKit
 import UserNotifications
 
 @MainActor final class AppStore: ObservableObject {
@@ -17,7 +18,7 @@ import UserNotifications
     var active: Workout? { data.workouts.first { $0.status == .active } }
     @discardableResult func transaction(_ operation: (inout AppData) throws -> Void) -> Bool {
         do {
-            var next = data; try operation(&next); try repository.save(next); data = next
+            var next = data; try operation(&next); try repository.save(next); data = next; error = nil
             return true
         } catch { self.error = "Not saved. \(error.localizedDescription) Your last saved records remain intact. Retry the edit or export a backup from Settings."; return false }
     }

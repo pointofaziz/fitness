@@ -6,6 +6,17 @@ import XCTest
 #endif
 
 final class EdgeCaseTests: XCTestCase {
+    func testCorrectingSavedSetDoesNotRestartRestTimer() throws {
+        let data = AppData(), now = Schedule.date("2026-10-12")!
+        let entry = Schedule.entries(through: "2026-10-12", data: data)[0]
+        var workout = try WorkoutFactory.start(entry: entry, data: data, now: now, light: false)
+        let log = workout.exercises[0]
+        try WorkoutOperations.completeSet(workout: &workout, exerciseID: log.id, setID: log.sets[0].id, weight: 30, reps: 8, rir: 3, now: now)
+        let rest = workout.restEnd
+        try WorkoutOperations.completeSet(workout: &workout, exerciseID: log.id, setID: log.sets[0].id, weight: 30, reps: 9, rir: 3, now: now.addingTimeInterval(60))
+        XCTAssertEqual(workout.restEnd, rest)
+        XCTAssertEqual(workout.exercises[0].sets[0].completedAt, now)
+    }
     func testSubsecondTimestampRoundTripIsExact() throws {
         var state = AppData()
         let now = Date(timeIntervalSinceReferenceDate: 800_000_000.1234567)

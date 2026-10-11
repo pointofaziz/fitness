@@ -1,0 +1,99 @@
+Building for debugging...
+[0/4] Write sources
+[2/4] Write swift-version-77B6030D2E7DE27B.txt
+[4/6] Emitting module LiftLogCore
+[5/6] Compiling LiftLogCore WorkoutOperations.swift
+[7/9] Emitting module LiftLogCoreTests
+[8/9] Compiling LiftLogCoreTests EdgeCaseTests.swift
+[9/16] /workspace/fitness/.build/x86_64-unknown-linux-gnu/debug/LiftLogCorePackageDiscoveredTests.derived/all-discovered-tests.swift
+[10/17] Write sources
+[11/17] Wrapping AST for LiftLogCoreTests for debugging
+[13/20] Compiling LiftLogCorePackageDiscoveredTests LiftLogCoreTests.swift
+[14/20] Compiling LiftLogCorePackageDiscoveredTests all-discovered-tests.swift
+[15/20] Emitting module LiftLogCorePackageDiscoveredTests
+[16/21] /workspace/fitness/.build/x86_64-unknown-linux-gnu/debug/LiftLogCorePackageTests.derived/runner.swift
+[17/22] Write sources
+[18/22] Wrapping AST for LiftLogCorePackageDiscoveredTests for debugging
+[20/24] Emitting module LiftLogCorePackageTests
+[21/24] Compiling LiftLogCorePackageTests runner.swift
+[22/24] Write Objects.LinkFileList
+[23/24] Linking LiftLogCorePackageTests.xctest
+Build complete! (2.34s)
+Test Suite 'All tests' started at 2026-10-11 11:17:46.334
+Test Suite 'debug.xctest' started at 2026-10-11 11:17:46.335
+Test Suite 'CoreTests' started at 2026-10-11 11:17:46.335
+Test Case 'CoreTests.testActiveWorkoutPersistsAndUnconfirmedRepsStayNil' started at 2026-10-11 11:17:46.335
+Test Case 'CoreTests.testActiveWorkoutPersistsAndUnconfirmedRepsStayNil' passed (0.006 seconds)
+Test Case 'CoreTests.testBaselineUsesCompletionAndIgnoresPartial' started at 2026-10-11 11:17:46.341
+Test Case 'CoreTests.testBaselineUsesCompletionAndIgnoresPartial' passed (0.002 seconds)
+Test Case 'CoreTests.testBodyWeeklyAverageMissingDaysAndWeeks' started at 2026-10-11 11:17:46.343
+Test Case 'CoreTests.testBodyWeeklyAverageMissingDaysAndWeeks' passed (0.0 seconds)
+Test Case 'CoreTests.testCSVIncludesUnitsActualsAndEscapes' started at 2026-10-11 11:17:46.344
+Test Case 'CoreTests.testCSVIncludesUnitsActualsAndEscapes' passed (0.002 seconds)
+Test Case 'CoreTests.testCalendarContinuesAndMissedNotCompleted' started at 2026-10-11 11:17:46.346
+Test Case 'CoreTests.testCalendarContinuesAndMissedNotCompleted' passed (0.003 seconds)
+Test Case 'CoreTests.testDSTMidnightAndRestTimer' started at 2026-10-11 11:17:46.348
+Test Case 'CoreTests.testDSTMidnightAndRestTimer' passed (0.002 seconds)
+Test Case 'CoreTests.testDisqualifiers' started at 2026-10-11 11:17:46.350
+Test Case 'CoreTests.testDisqualifiers' passed (0.003 seconds)
+Test Case 'CoreTests.testDuplicateAndInvalidBackupsRejected' started at 2026-10-11 11:17:46.353
+Test Case 'CoreTests.testDuplicateAndInvalidBackupsRejected' passed (0.001 seconds)
+Test Case 'CoreTests.testEquipmentStepRequiredAndPerHand' started at 2026-10-11 11:17:46.354
+Test Case 'CoreTests.testEquipmentStepRequiredAndPerHand' passed (0.0 seconds)
+Test Case 'CoreTests.testExactProgrammeAndCalendar' started at 2026-10-11 11:17:46.354
+Test Case 'CoreTests.testExactProgrammeAndCalendar' passed (0.001 seconds)
+Test Case 'CoreTests.testExtraRepAndPoorSessionHold' started at 2026-10-11 11:17:46.356
+Test Case 'CoreTests.testExtraRepAndPoorSessionHold' passed (0.0 seconds)
+Test Case 'CoreTests.testIntroAndNeck' started at 2026-10-11 11:17:46.356
+Test Case 'CoreTests.testIntroAndNeck' passed (0.001 seconds)
+Test Case 'CoreTests.testIntroDoesNotEarnThirdSet' started at 2026-10-11 11:17:46.357
+Test Case 'CoreTests.testIntroDoesNotEarnThirdSet' passed (0.101 seconds)
+Test Case 'CoreTests.testLightDoesNotIncreaseOrReplaceNormalBaseline' started at 2026-10-11 11:17:46.458
+Test Case 'CoreTests.testLightDoesNotIncreaseOrReplaceNormalBaseline' passed (0.001 seconds)
+Test Case 'CoreTests.testMixedLoadsRequireManualTarget' started at 2026-10-11 11:17:46.459
+Test Case 'CoreTests.testMixedLoadsRequireManualTarget' passed (0.0 seconds)
+Test Case 'CoreTests.testQualifyingIncline' started at 2026-10-11 11:17:46.459
+Test Case 'CoreTests.testQualifyingIncline' passed (0.0 seconds)
+Test Case 'CoreTests.testRescheduleStableIDAndNoDuplication' started at 2026-10-11 11:17:46.460
+Test Case 'CoreTests.testRescheduleStableIDAndNoDuplication' passed (0.002 seconds)
+Test Case 'CoreTests.testStallNeedsThreeComparableExposuresAndRepGainBreaksIt' started at 2026-10-11 11:17:46.461
+Test Case 'CoreTests.testStallNeedsThreeComparableExposuresAndRepGainBreaksIt' passed (0.004 seconds)
+Test Case 'CoreTests.testUndoPartialAndWarmup' started at 2026-10-11 11:17:46.465
+Test Case 'CoreTests.testUndoPartialAndWarmup' passed (0.001 seconds)
+Test Case 'CoreTests.testVersionOneMigrationAndInvalidImport' started at 2026-10-11 11:17:46.466
+Test Case 'CoreTests.testVersionOneMigrationAndInvalidImport' passed (0.011 seconds)
+Test Case 'CoreTests.testWholeSessionRoundTripAndSnapshot' started at 2026-10-11 11:17:46.477
+Test Case 'CoreTests.testWholeSessionRoundTripAndSnapshot' passed (0.002 seconds)
+Test Case 'CoreTests.testZeroLoadAndDecimalValidation' started at 2026-10-11 11:17:46.480
+Test Case 'CoreTests.testZeroLoadAndDecimalValidation' passed (0.0 seconds)
+Test Suite 'CoreTests' passed at 2026-10-11 11:17:46.480
+	 Executed 22 tests, with 0 failures (0 unexpected) in 0.145 (0.145) seconds
+Test Suite 'EdgeCaseTests' started at 2026-10-11 11:17:46.480
+Test Case 'EdgeCaseTests.testCompletedSetValidationRejectsFractionalRepsAndBadReserve' started at 2026-10-11 11:17:46.480
+Test Case 'EdgeCaseTests.testCompletedSetValidationRejectsFractionalRepsAndBadReserve' passed (0.0 seconds)
+Test Case 'EdgeCaseTests.testCorrectingSavedSetDoesNotRestartRestTimer' started at 2026-10-11 11:17:46.480
+Test Case 'EdgeCaseTests.testCorrectingSavedSetDoesNotRestartRestTimer' passed (0.0 seconds)
+Test Case 'EdgeCaseTests.testFarFutureSessionMovedEarlierAppearsOnlyOnce' started at 2026-10-11 11:17:46.480
+Test Case 'EdgeCaseTests.testFarFutureSessionMovedEarlierAppearsOnlyOnce' passed (0.003 seconds)
+Test Case 'EdgeCaseTests.testLegacyISO8601DatesDecode' started at 2026-10-11 11:17:46.484
+Test Case 'EdgeCaseTests.testLegacyISO8601DatesDecode' passed (0.002 seconds)
+Test Case 'EdgeCaseTests.testManualNextTargetOverridesMixedLoadReview' started at 2026-10-11 11:17:46.486
+Test Case 'EdgeCaseTests.testManualNextTargetOverridesMixedLoadReview' passed (0.001 seconds)
+Test Case 'EdgeCaseTests.testNegativeBodyEntryAndInconsistentCompletionRejected' started at 2026-10-11 11:17:46.487
+Test Case 'EdgeCaseTests.testNegativeBodyEntryAndInconsistentCompletionRejected' passed (0.001 seconds)
+Test Case 'EdgeCaseTests.testSubsecondTimestampRoundTripIsExact' started at 2026-10-11 11:17:46.488
+Test Case 'EdgeCaseTests.testSubsecondTimestampRoundTripIsExact' passed (0.005 seconds)
+Test Case 'EdgeCaseTests.testTemplateIDsDoNotShareRowHistory' started at 2026-10-11 11:17:46.493
+Test Case 'EdgeCaseTests.testTemplateIDsDoNotShareRowHistory' passed (0.0 seconds)
+Test Case 'EdgeCaseTests.testWarmupsCannotEarnIncrease' started at 2026-10-11 11:17:46.493
+Test Case 'EdgeCaseTests.testWarmupsCannotEarnIncrease' passed (0.0 seconds)
+Test Suite 'EdgeCaseTests' passed at 2026-10-11 11:17:46.494
+	 Executed 9 tests, with 0 failures (0 unexpected) in 0.014 (0.014) seconds
+Test Suite 'debug.xctest' passed at 2026-10-11 11:17:46.494
+	 Executed 31 tests, with 0 failures (0 unexpected) in 0.158 (0.158) seconds
+Test Suite 'All tests' passed at 2026-10-11 11:17:46.494
+	 Executed 31 tests, with 0 failures (0 unexpected) in 0.158 (0.158) seconds
+◇ Test run started.
+↳ Testing Library Version: 6.2.3 (48a471ab313e858)
+↳ Target Platform: x86_64-unknown-linux-gnu
+✔ Test run with 0 tests in 0 suites passed after 0.001 seconds.

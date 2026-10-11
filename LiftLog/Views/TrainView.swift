@@ -1,9 +1,11 @@
 import SwiftUI
 
-struct TrainView: View {
+@MainActor struct TrainView: View {
     @EnvironmentObject private var store: AppStore
     @State private var light = false
     @State private var showingWorkout = false
+    @State private var presentedWorkoutID: UUID?
+    @State private var showSummary = false
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 18) {
@@ -14,7 +16,7 @@ struct TrainView: View {
                         Text(active.templateName).font(.largeTitle.bold())
                         Text("\(active.completedSetCount) working sets saved · started \(active.localDate)")
                         Text("Your original targets are preserved.").font(.footnote).foregroundStyle(.secondary)
-                        Button("Resume workout") { showingWorkout = true }.buttonStyle(PrimaryButton()).accessibilityIdentifier("resumeWorkout")
+                        Button("Resume workout") { presentedWorkoutID = active.id; showingWorkout = true }.buttonStyle(PrimaryButton()).accessibilityIdentifier("resumeWorkout")
                     }
                 } else if let entry = Schedule.next(data: store.data, now: store.now), let template = store.data.templates.first(where: { $0.id == entry.templateID }) {
                     Card {
@@ -26,7 +28,7 @@ struct TrainView: View {
                         Toggle("Light session", isOn: $light)
                         if light { Text("Half the sets, rounded up; about 10% less load; 4 RIR. Your normal baseline stays intact.").font(.footnote) }
                         Button(entry.date == Schedule.day(store.now, zone: store.data.timeZoneID) ? "Start workout" : "Train today") {
-                            store.start(entry, light: light); showingWorkout = store.active != nil
+                            store.start(entry, light: light); presentedWorkoutID = store.active?.id; showingWorkout = store.active != nil
                         }.buttonStyle(PrimaryButton()).accessibilityIdentifier("startWorkout")
                     }
                 }
@@ -45,13 +47,16 @@ struct TrainView: View {
                 }
             }.padding()
         }.background(Color(uiColor: .systemGroupedBackground)).navigationTitle("Train")
-        .sheet(isPresented: $showingWorkout) {
-            if let active = store.active { NavigationStack { WorkoutView(workoutID: active.id) }.interactiveDismissDisabled(false) }
+        .sheet(isPresented: $showingWorkout, onDismiss: {
+            if let id = presentedWorkoutID, store.data.workouts.first(where: { $0.id == id })?.status != .active { showSummary = true }
+        }) {
+            if let id = presentedWorkoutID { NavigationStack { WorkoutView(workoutID: id) }.interactiveDismissDisabled(false) }
         }
+        .navigationDestination(isPresented: $showSummary) { if let id = presentedWorkoutID { WorkoutSummaryView(workoutID: id) } }
     }
 }
 
-struct WorkoutSummaryView: View {
+@MainActor struct WorkoutSummaryView: View {
     @EnvironmentObject private var store: AppStore
     let workoutID: UUID
     var body: some View {

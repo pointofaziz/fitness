@@ -1,6 +1,6 @@
 import SwiftUI
 
-struct ProgrammeView: View {
+@MainActor struct ProgrammeView: View {
     @EnvironmentObject private var store: AppStore
     @State private var moving: ScheduleEntry?
     @State private var startEntry: ScheduleEntry?
@@ -59,7 +59,7 @@ struct ProgrammeView: View {
         if !entry.skipped { Button("Train") { startEntry = entry }.buttonStyle(.bordered).frame(minHeight: 44).disabled(store.active != nil) }
     }
 }
-struct MoveSessionView: View {
+@MainActor struct MoveSessionView: View {
     @EnvironmentObject private var store: AppStore
     @Environment(\.dismiss) private var dismiss
     let entry: ScheduleEntry
@@ -76,7 +76,7 @@ struct MoveSessionView: View {
         .toolbar { ToolbarItem(placement: .cancellationAction) { Button("Cancel") { dismiss() } } }
     }
 }
-struct TemplateView: View {
+@MainActor struct TemplateView: View {
     @EnvironmentObject private var store: AppStore
     let templateID: String
     var body: some View {
@@ -99,7 +99,7 @@ struct TemplateView: View {
         }
     }
 }
-struct ExerciseSettingsView: View {
+@MainActor struct ExerciseSettingsView: View {
     @EnvironmentObject private var store: AppStore
     @Environment(\.dismiss) private var dismiss
     @FocusState private var typing: Bool

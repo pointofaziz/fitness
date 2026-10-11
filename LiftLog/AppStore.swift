@@ -7,8 +7,11 @@ import UserNotifications
     @Published var notice: String?
     let repository: any LogRepository
     let clock: () -> Date
-    init(repository: any LogRepository, clock: @escaping () -> Date = Date.init) throws {
-        self.repository = repository; self.clock = clock; data = try repository.load()
+    let recoveryDirectory: URL
+    init(repository: any LogRepository, clock: @escaping () -> Date = Date.init, recoveryDirectory: URL? = nil) throws {
+        self.repository = repository; self.clock = clock
+        self.recoveryDirectory = recoveryDirectory ?? FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0].appendingPathComponent("Recovery", isDirectory: true)
+        data = try repository.load()
     }
     var now: Date { clock() }
     var active: Workout? { data.workouts.first { $0.status == .active } }
@@ -74,7 +77,7 @@ import UserNotifications
         } catch { notice = "Notifications unavailable. The in-app timer still works." }
     }
     func backupURL() throws -> URL {
-        let folder = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0].appendingPathComponent("Recovery", isDirectory: true)
+        let folder = recoveryDirectory
         try FileManager.default.createDirectory(at: folder, withIntermediateDirectories: true)
         let url = folder.appendingPathComponent("LiftLog-before-replace-\(UUID().uuidString).json")
         try Backup.encode(data).write(to: url, options: .atomic)

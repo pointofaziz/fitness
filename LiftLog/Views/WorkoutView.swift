@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct SetSelection: Identifiable { let id: UUID; let exerciseID: String }
-struct WorkoutView: View {
+@MainActor struct WorkoutView: View {
     @EnvironmentObject private var store: AppStore
     @Environment(\.dismiss) private var dismiss
     @State private var selected = 0
@@ -117,7 +117,7 @@ struct WorkoutView: View {
     }
 }
 
-struct RestBar: View {
+@MainActor struct RestBar: View {
     @EnvironmentObject private var store: AppStore
     let workoutID: UUID
     var body: some View {
@@ -138,7 +138,7 @@ struct RestBar: View {
     }
 }
 
-struct SetEditor: View {
+@MainActor struct SetEditor: View {
     @EnvironmentObject private var store: AppStore
     @Environment(\.dismiss) private var dismiss
     @FocusState private var focus: Field?
@@ -166,6 +166,7 @@ struct SetEditor: View {
                 numericField("RIR", text: $rir, field: .rir, decimal: false, step: 1)
                 Text("RIR = clean reps left. Bodyweight uses 0 external kg. Dot and comma decimals both work.").font(.footnote)
             }
+            if let error = store.error { Section("Save failed") { Text(error); Button("Retry saving", action: complete) } }
             if let message { Section { Text(message).foregroundStyle(.red).accessibilityIdentifier("validationMessage") } }
             if set?.completedAt != nil {
                 Section {
@@ -216,7 +217,7 @@ struct SetEditor: View {
     }
 }
 
-struct NeckView: View {
+@MainActor struct NeckView: View {
     @EnvironmentObject private var store: AppStore
     let workoutID: UUID
     var body: some View {

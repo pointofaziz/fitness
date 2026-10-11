@@ -1,0 +1,3 @@
+// Replace with your own unique reverse-DNS identifier before device signing.
+LIFTLOG_BUNDLE_ID = com.pointofaziz.LiftLog
+// Select your Personal Team in Xcode. No credentials belong in this file.

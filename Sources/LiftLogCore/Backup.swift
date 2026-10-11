@@ -11,12 +11,22 @@ public struct BackupEnvelope: Codable, Equatable, Sendable {
 public enum Backup {
     public static func encode(_ data: AppData, now: Date = Date()) throws -> Data {
         try validate(data)
-        let encoder = JSONEncoder(); encoder.outputFormatting = [.prettyPrinted, .sortedKeys]; encoder.dateEncodingStrategy = .iso8601
+        let encoder = JSONEncoder(); encoder.outputFormatting = [.prettyPrinted, .sortedKeys]; encoder.dateEncodingStrategy = .deferredToDate
         return try encoder.encode(BackupEnvelope(data: data, exportedAt: now))
     }
     public static func decode(_ bytes: Data) throws -> AppData {
         guard bytes.count <= 50_000_000 else { throw LogError.invalid("Backup exceeds the 50 MB limit.") }
-        let decoder = JSONDecoder(); decoder.dateDecodingStrategy = .iso8601
+        let decoder = JSONDecoder()
+        decoder.dateDecodingStrategy = .custom { decoder in
+            let value = try decoder.singleValueContainer()
+            if let seconds = try? value.decode(Double.self), seconds.isFinite { return Date(timeIntervalSinceReferenceDate: seconds) }
+            let text = try value.decode(String.self)
+            let formatter = ISO8601DateFormatter()
+            if let date = formatter.date(from: text) { return date }
+            formatter.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
+            if let date = formatter.date(from: text) { return date }
+            throw LogError.invalid("Invalid backup timestamp.")
+        }
         let envelope = try decoder.decode(BackupEnvelope.self, from: bytes)
         guard (1...2).contains(envelope.schemaVersion) else { throw LogError.invalid("Unsupported backup version. Existing records are unchanged.") }
         // v1 lacked timezone and preference fields. AppData's decoder supplies explicit v2 defaults.

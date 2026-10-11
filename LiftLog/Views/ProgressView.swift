@@ -1,7 +1,7 @@
 import SwiftUI
 import Charts
 
-struct ProgressViewScreen: View {
+@MainActor struct ProgressViewScreen: View {
     @EnvironmentObject private var store: AppStore
     @State private var templateID = "upper-a"
     @State private var exerciseID = "ua-incline"
@@ -22,6 +22,7 @@ struct ProgressViewScreen: View {
                     Label("Review: three comparable completed normal exposures without rep/load improvement at similar RIR. Check recovery, setup and technique. No sets or deload are added automatically.", systemImage: "magnifyingglass").font(.callout)
                 }
                 let history = store.data.workouts.filter { $0.templateID == templateID && $0.exercises.contains { $0.id == exerciseID && $0.sets.contains { $0.completedAt != nil } } }.sorted { ($0.completedAt ?? $0.startedAt) > ($1.completedAt ?? $1.startedAt) }
+                ExerciseLoadChart(workouts: history, exercise: exercise)
                 if history.isEmpty { Text("No recorded sets yet. Your first session will appear here.").foregroundStyle(.secondary) }
                 ForEach(history) { w in
                     if let log = w.exercises.first(where: { $0.id == exerciseID }) {
@@ -68,7 +69,7 @@ struct ProgressViewScreen: View {
         }.navigationTitle("Progress").sheet(isPresented: $bodyEditor) { NavigationStack { BodyEditor() } }
     }
 }
-struct BodyEditor: View {
+@MainActor struct BodyEditor: View {
     @EnvironmentObject private var store: AppStore
     @Environment(\.dismiss) private var dismiss
     @FocusState private var focused: Bool
@@ -96,6 +97,43 @@ struct BodyEditor: View {
         .toolbar {
             ToolbarItem(placement: .cancellationAction) { Button("Cancel") { dismiss() } }
             ToolbarItemGroup(placement: .keyboard) { Spacer(); Button("Done") { focused = false } }
+        }
+    }
+}
+
+@MainActor struct ExerciseLoadChart: View {
+    let workouts: [Workout]
+    let exercise: Exercise
+    private struct Point: Identifiable {
+        var id: UUID
+        var date: Date
+        var load: Double
+    }
+    private var points: [Point] {
+        workouts.compactMap { w in
+            guard w.status == .completed, !w.light, let completed = w.completedAt,
+                  let log = w.exercises.first(where: { $0.id == exercise.id }), log.fullyRecorded,
+                  log.prescription.exercise.equipment == exercise.equipment,
+                  log.prescription.exercise.unit == exercise.unit,
+                  log.prescription.sets == exercise.sets,
+                  log.prescription.exercise.minReps == exercise.minReps,
+                  log.prescription.exercise.maxReps == exercise.maxReps,
+                  Set(log.workingSets.compactMap(\.weight)).count == 1,
+                  let load = log.workingSets.first?.weight else { return nil }
+            return Point(id: w.id, date: completed, load: load)
+        }.sorted { $0.date < $1.date }
+    }
+    var body: some View {
+        if !points.isEmpty {
+            VStack(alignment: .leading, spacing: 8) {
+                Text("Normal-session load · \(exercise.unit.rawValue)").font(.caption.bold())
+                Text("\(exercise.equipment) · same sets and rep range").font(.caption)
+                Chart(points) { point in
+                    PointMark(x: .value("Completed", point.date), y: .value("Load", point.load))
+                        .accessibilityLabel("\(point.date.formatted(date: .abbreviated, time: .omitted)), \(Input.number(point.load)) \(exercise.unit.rawValue)")
+                }.frame(height: 150).chartYScale(domain: .automatic(includesZero: false))
+                Text("Load alone is not a strength score; review actual reps, RIR and form below.").font(.footnote)
+            }
         }
     }
 }

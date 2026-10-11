@@ -80,6 +80,9 @@ public enum Schedule {
             }
             cursor = c.date(byAdding: .day, value: 1, to: cursor)!
         }
+        // An override can bring a far-future slot into the requested window.
+        let generatedIDs = Set(result.map(\.id))
+        result.append(contentsOf: data.scheduleChanges.filter { !generatedIDs.contains($0.id) && $0.date <= end })
         return result.sorted { $0.date == $1.date ? $0.id < $1.id : $0.date < $1.date }
     }
     public static func next(data: AppData, now: Date) -> ScheduleEntry? {

@@ -1,9 +1,9 @@
 import SwiftUI
 
-@main struct LiftLogApp: App {
+@main @MainActor struct LiftLogApp: App {
     var body: some Scene { WindowGroup { BootstrapView() } }
 }
-struct BootstrapView: View {
+@MainActor struct BootstrapView: View {
     @State private var store: AppStore?
     @State private var failure: String?
     @State private var recoveryFiles: [URL] = []
@@ -44,7 +44,7 @@ struct BootstrapView: View {
         }
     }
 }
-struct RootView: View {
+@MainActor struct RootView: View {
     @EnvironmentObject private var store: AppStore
     @Environment(\.scenePhase) private var scenePhase
     var body: some View {
@@ -60,7 +60,7 @@ struct RootView: View {
         .onChange(of: scenePhase) { _, phase in if phase == .active { store.refreshNotification() } }
     }
 }
-struct Card<Content: View>: View {
+@MainActor struct Card<Content: View>: View {
     @ViewBuilder var content: Content
     var body: some View { VStack(alignment: .leading, spacing: 12) { content }.frame(maxWidth: .infinity, alignment: .leading).padding().background(Color(uiColor: .secondarySystemGroupedBackground), in: RoundedRectangle(cornerRadius: 18)) }
 }

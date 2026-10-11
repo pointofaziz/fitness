@@ -1,5 +1,9 @@
 import XCTest
+#if canImport(LiftLogCore)
 @testable import LiftLogCore
+#else
+@testable import LiftLog
+#endif
 
 final class CoreTests: XCTestCase {
     let now = Schedule.date("2026-10-26")!

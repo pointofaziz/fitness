@@ -8,7 +8,7 @@ struct LogDocument: FileDocument {
     init(configuration: ReadConfiguration) throws { bytes = configuration.file.regularFileContents ?? Data() }
     func fileWrapper(configuration: WriteConfiguration) throws -> FileWrapper { FileWrapper(regularFileWithContents: bytes) }
 }
-struct SettingsView: View {
+@MainActor struct SettingsView: View {
     @EnvironmentObject private var store: AppStore
     @State private var exporting = false
     @State private var importing = false

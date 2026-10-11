@@ -17,7 +17,7 @@ The Swift test tool also prints an empty Swift Testing run after XCTest; the rel
 
 Core coverage includes: exact initial calendar/weekdays and continued dates; template counts/sets; intro and neck holds; qualifying 31 → 32 kg incline; low/missing RIR, form, pain, mixed/incomplete/skipped work; manual targets; warm-up exclusion; per-hand increments; light reduction/baseline isolation; two-to-three-set transition; stalls versus rep improvements; completion-time baseline ordering; separate row identities; stable rescheduling, including bringing a far-future slot forward; zero external weight and input limits; full session logging; active-session/JSON round-trips; immutable historical prescriptions; undo/partial behavior; exact subsecond timestamps; v1 and legacy-date migration; invalid/duplicate backup rejection; weekly averages/missing weeks; Warsaw DST/midnight; elapsed rest and correction without restarting rest; and escaped CSV actuals.
 
-## Authored, not executed here
+## Native suites authored; cloud run attempted
 
 The Xcode **LiftLogTests** target includes the same 31 core tests plus **4 native tests**:
 
@@ -33,7 +33,7 @@ The **LiftLogUITests** target contains **4 simulator journeys**:
 - Complete all 16 introductory Upper A working sets, form confirmations and four neck holds → summary.
 - Four destinations and accessibility-size text smoke checks.
 
-These tests may need adjustments when first compiled/run with the Apple SDK. A successful Linux test is not evidence they pass. The DEBUG UI-test mode uses an isolated test store and a fixed programme-start date; it never inserts demo workouts into production.
+The first cloud Mac test attempt failed with exit 65; no passing native-suite result is claimed. Review its `tests.log` and `.xcresult` artifact to identify failed cases. A successful Linux test is not evidence the native suites pass. The DEBUG UI-test mode uses an isolated test store and a fixed programme-start date; it never inserts demo workouts into production.
 
 ## Required on the Mac
 
@@ -58,3 +58,15 @@ No automatic sync, account, food tracker, body-fat estimate, HealthKit, AI or pu
 ## Cloud Mac workflow added
 
 `.github/workflows/ios.yml` uses a GitHub-hosted Mac to build a universal simulator app, capture a native screenshot, and execute the unit/UI suites. It uploads build/test logs and the simulator package to the run's Artifacts section. The simulator selector was checked against available/unavailable devices, different platforms and deployment versions on Linux; the workflow YAML and launcher shell syntax also passed local checks. These checks do not establish that a GitHub Mac run passed. Consult the current Actions result for Apple SDK and simulator evidence.
+
+## First cloud Mac run: 11 October 2026
+
+[Run 38145061087](https://github.com/pointofaziz/fitness/actions/runs/38145061087), source commit `b1397461f5bca3d776d5604f0ac1c8dc066d6ff6`:
+
+- Universal simulator app build: **success**, with Apple SDK compilation through `xcodebuild`.
+- Package creation: **success**.
+- Simulator boot, install, launch and screenshot: **success**.
+- Combined native unit/UI test step: **failure**, exit code 65. Passing case counts and the underlying failure have not been established; authenticated logs/artifact access is required.
+- Artifact upload: **success**, `LiftLog-Simulator-and-Test-Results`, 82.7 MB. Includes prebuilt simulator ZIP, screenshot, logs and test result bundle.
+
+These Mac results supersede the earlier Linux-only build limitation. They do not establish that all native tests pass or verify physical iPhone behavior.

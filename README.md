@@ -2,7 +2,7 @@
 
 A native, offline SwiftUI iPhone workout log for the exact four-day programme in [the brief](docs/OriginalBrief.md). **The complete Xcode project is `LiftLog.xcodeproj`.** This repository was implemented in Codex Cloud on Linux for transfer to a Mac, as requested. No web app, third-party libraries, accounts or services.
 
-**Verification status:** the Foundation core compiles and its tests run on Linux. SwiftUI, SwiftData, Xcode compilation, simulator journeys and physical-device installation remain unverified until run on a Mac. Source parsing and project-structure checks are not evidence that the iOS app builds. See [the verification record](docs/Verification.md).
+**Verification status:** 31 Foundation core tests passed on Linux. The [11 October cloud Mac run](https://github.com/pointofaziz/fitness/actions/runs/38145061087) successfully compiled the native iOS app for Intel and Apple silicon simulators, installed and launched it, and captured a screenshot. Its combined unit/UI test step failed (exit 65), so those suites are not verified as passing. The run provides the simulator app and diagnostic artifacts. Physical-iPhone installation and behavior remain unverified. See [the verification record](docs/Verification.md).
 
 ## Download and open on your Mac
 
